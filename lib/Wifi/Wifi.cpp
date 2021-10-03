@@ -1,15 +1,25 @@
 #include "Wifi.h"
 
 Wifi::Wifi(){
-    WifiSoftAPRunDefault();
+    // Wait for configuration
 }
 
-// TODO
-Wifi::Wifi(Wifi::WifiConf wifi_conf, Wifi::Network network){
-    // WifiRun(ssid, pass, channel, max_connection, local_ip, gateway, subnet);
+Wifi::Wifi( bool ap_en, Wifi::WifiConf ap_wifi_conf, Wifi::Network ap_network,
+            bool sta_en, Wifi::WifiConf sta_wifi_conf, Wifi::Network sta_network){
+
+    // mode(WIFI_STA);
+
+    if(ap_en){
+        WifiAPRun(sta_wifi_conf, sta_network);
+    }
+
+    if(sta_en){
+        WifiSTARun(sta_wifi_conf, sta_network);
+    }
+    
 }
 
-void Wifi::WifiSoftAPRunDefault(){
+void Wifi::WifiAPRun(){
     WifiConf def_wifi_conf = {
         I_SSID_DEFAULT,
         I_PASS_DEFAULT,
@@ -23,15 +33,47 @@ void Wifi::WifiSoftAPRunDefault(){
         I_SUBNET_DEFAULT
     };
 
-    WifiSoftAPRun(def_wifi_conf, def_network);
+    WifiAPRun(def_wifi_conf, def_network);
 }
 
-void Wifi::WifiSoftAPRun(Wifi::WifiConf wifi_conf, Wifi::Network network){
-    WifiSoftAPConfig(network);
-    WifiSoftAPSetup(wifi_conf);
+void Wifi::WifiAPRun(Wifi::WifiConf wifi_conf, Wifi::Network network){
+    WifiAPConfig(network);
+    WifiAPSetup(wifi_conf);
 }
 
-void Wifi::WifiSoftAPConfig(Wifi::Network network){
+void Wifi::WifiAPConfig(Wifi::Network network){
+
+    // NetworkSet(network)
+    IPAddress aux_local_ip( network.local_ip[0],
+                            network.local_ip[1],
+                            network.local_ip[2],
+                            network.local_ip[3]);
+    IPAddress aux_gateway(  network.gateway[0],
+                            network.gateway[1],
+                            network.gateway[2],
+                            network.gateway[3]);
+    IPAddress aux_subnet(   network.subnet[0],
+                            network.subnet[1],
+                            network.subnet[2],
+                            network.subnet[3]);
+
+    softAPConfig(aux_local_ip, aux_gateway, aux_subnet);
+}
+
+void Wifi::WifiAPSetup(Wifi::WifiConf wifi_conf){
+
+    // Do not hide SSID
+    uint8_t aux_hidden = 0x00;
+
+    softAP(wifi_conf.ssid, wifi_conf.pass, wifi_conf.channel, aux_hidden, wifi_conf.max_connection);
+}
+
+void Wifi::WifiSTARun(Wifi::WifiConf wifi_conf, Wifi::Network network){
+    WifiAPConfig(network);
+    WifiAPSetup(wifi_conf);
+}
+
+void Wifi::WifiSTAConfig(Wifi::Network network){
     // TODO
     // NetworkSet(network)
     IPAddress aux_local_ip( network.local_ip[0],
@@ -50,7 +92,7 @@ void Wifi::WifiSoftAPConfig(Wifi::Network network){
     softAPConfig(aux_local_ip, aux_gateway, aux_subnet);
 }
 
-void Wifi::WifiSoftAPSetup(Wifi::WifiConf wifi_conf){
+void Wifi::WifiSTASetup(Wifi::WifiConf wifi_conf){
     // TODO
     // WifiConfSet(wifi_conf);
     
@@ -59,7 +101,6 @@ void Wifi::WifiSoftAPSetup(Wifi::WifiConf wifi_conf){
 
     softAP(wifi_conf.ssid, wifi_conf.pass, wifi_conf.channel, aux_hidden, wifi_conf.max_connection);
 }
-
 
 // uint8_t Wifi::StationNumGet(){
 //     return ESP8266WiFiClass.softAPgetStationNum();
@@ -91,7 +132,8 @@ void Wifi::WifiSoftAPSetup(Wifi::WifiConf wifi_conf){
 // uint8_t* Wifi::LocalIpGet(){ return i_local_ip;}
 // uint8_t* Wifi::GatewayGet(){ return i_gateway;}
 // uint8_t* Wifi::SubnetGet(){ return i_subnet;}
-Wifi::Network Wifi::NetworkGet(){return i_network;}
+
+// Wifi::Network Wifi::NetworkGet(){return i_network;}
 
 // Private
 
@@ -104,4 +146,4 @@ Wifi::Network Wifi::NetworkGet(){return i_network;}
 // void Wifi::GatewaySet(uint8_t gateway[4]){i_gateway = gateway;}
 // void Wifi::SubnetSet(uint8_t subnet[4]){i_subnet = subnet;}
 
-void Wifi::NetworkSet(Network net){}
+// void Wifi::NetworkSet(Network net){}
