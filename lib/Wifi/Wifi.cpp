@@ -1,33 +1,16 @@
 #include "Wifi.h"
 
 Wifi::Wifi(){
-    // Wait for configuration
-}
-
-Wifi::Wifi( bool ap_en, Wifi::WifiConf ap_wifi_conf, Wifi::Network ap_network,
-            bool sta_en, Wifi::WifiConf sta_wifi_conf, Wifi::Network sta_network){
-
-    // mode(WIFI_STA);
-
-    if(ap_en){
-        WifiAPRun(sta_wifi_conf, sta_network);
-    }
-
-    if(sta_en){
-        WifiSTARun(sta_wifi_conf, sta_network);
-    }
-    
+    _sta_enable = false;
+    _ap_enable = false;
 }
 
 void Wifi::WifiAPRun(){
-    WifiConf def_wifi_conf = {
+    APConf def_wifi_conf = {
         I_SSID_DEFAULT,
         I_PASS_DEFAULT,
         I_CHANNEL_DEFAULT,
         I_MAX_CONNECTION_DEFAULT
-    };
-
-    Network def_network = {
         I_LOCAL_IP_DEFAULT,
         I_GATEWAY_DEFAULT,
         I_SUBNET_DEFAULT
@@ -101,49 +84,3 @@ void Wifi::WifiSTASetup(Wifi::WifiConf wifi_conf){
 
     softAP(wifi_conf.ssid, wifi_conf.pass, wifi_conf.channel, aux_hidden, wifi_conf.max_connection);
 }
-
-// uint8_t Wifi::StationNumGet(){
-//     return ESP8266WiFiClass.softAPgetStationNum();
-// }
-
-// uint8_t* Wifi::CurrentIpGet(){
-//     return ESP8266WiFiClass.softAPIP();
-// }
-
-// uint8_t* Wifi::MacAddressGet(){
-//     uint8_t mac_addr[6];
-//     ESP8266WiFiClass.softAPmacAddress(mac_addr);
-//     return mac_addr;
-// }
-
-// char* Wifi::SsidDefaultGet(){ return i_ssid_default;}
-// char* Wifi::PassDefaultGet(){ return i_pass_default;}
-// uint8_t Wifi::ChannelDefaultGet(){ return i_channel_default;}
-// uint8_t Wifi::MaxConnectionDefaultGet(){ return i_max_connection_default;}
-// uint8_t* Wifi::LocalIpDefaultGet(){ return i_local_ip_default;}
-// uint8_t* Wifi::GatewayDefaultGet(){ return i_gateway_default;}
-// uint8_t* Wifi::SubnetDefaultGet(){ return i_subnet_default;}
-
-// char* Wifi::SsidGet(){ return i_ssid;}
-// char* Wifi::PassGet(){ return i_pass;}
-// uint8_t Wifi::ChannelGet(){ return i_channel;}
-// uint8_t Wifi::MaxConnectionGet(){ return i_max_connection;}
-
-// uint8_t* Wifi::LocalIpGet(){ return i_local_ip;}
-// uint8_t* Wifi::GatewayGet(){ return i_gateway;}
-// uint8_t* Wifi::SubnetGet(){ return i_subnet;}
-
-// Wifi::Network Wifi::NetworkGet(){return i_network;}
-
-// Private
-
-// void Wifi::SsidSet(char ssid[32]){i_ssid = ssid;}
-// void Wifi::PassSet(char pass[64]){i_pass = pass;}
-// void Wifi::ChannelSet(uint8_t channel){i_channel = channel;}
-// void Wifi::MaxConnectionSet(uint8_t max_connection){i_max_connection = max_connection;}
-
-// void Wifi::LocalIpSet(uint8_t local_ip[4]){i_local_ip = local_ip;}
-// void Wifi::GatewaySet(uint8_t gateway[4]){i_gateway = gateway;}
-// void Wifi::SubnetSet(uint8_t subnet[4]){i_subnet = subnet;}
-
-// void Wifi::NetworkSet(Network net){}
